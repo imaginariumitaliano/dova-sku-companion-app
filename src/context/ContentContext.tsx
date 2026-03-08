@@ -50,8 +50,10 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
 
     let globalIndex = 0;
     return book.chapters.flatMap((chapter) =>
-      chapter.images.map((url) => ({
-        url,
+      chapter.images.map((image: { url: string; title?: string; description?: string }) => ({
+        url: image.url,
+        title: image.title,
+        description: image.description,
         chapterNumber: chapter.number,
         chapterTitle: chapter.title,
         globalIndex: globalIndex++,

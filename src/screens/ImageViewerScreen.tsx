@@ -66,11 +66,18 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
       {/* Chapter label */}
       <View style={styles.chapterBadge}>
         <Text style={styles.chapterLabel}>
-          Chapter {current.chapterNumber}
+          Chapter {current.chapterNumber} · {current.chapterTitle}
         </Text>
-        <Text style={styles.chapterTitle} numberOfLines={1}>
-          {current.chapterTitle}
-        </Text>
+        {current.title && (
+          <Text style={styles.imageTitle} numberOfLines={1}>
+            {current.title}
+          </Text>
+        )}
+        {current.description && (
+          <Text style={styles.imageDescription} numberOfLines={2}>
+            {current.description}
+          </Text>
+        )}
       </View>
 
       {/* Image */}
@@ -141,10 +148,16 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
     marginBottom: 2,
   },
-  chapterTitle: {
+  imageTitle: {
     color: colors.textPrimary,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
+    marginTop: 4,
+  },
+  imageDescription: {
+    color: colors.textMuted,
+    fontSize: 13,
+    marginTop: 2,
   },
   imageContainer: {
     flex: 1,

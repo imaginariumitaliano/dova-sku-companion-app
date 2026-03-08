@@ -17,11 +17,11 @@ A mobile app (iOS & Android) that displays images tied to chapters of a book ser
 
 This repo stores your images and chapter data. The app fetches content from here at launch.
 
-1. Go to [github.com](https://github.com) and create a **new public repository** named `book-companion-content`
+1. Go to [github.com](https://github.com) and create a **new public repository** named `dova-sku-companion-content`
 2. Clone it to your computer
 3. Inside the repo, create this folder structure:
    ```
-   book-companion-content/
+   dova-sku-companion-content/
    ├── books.json
    └── images/
        └── book1/
@@ -39,7 +39,7 @@ This repo stores your images and chapter data. The app fetches content from here
 
 Image URLs follow this pattern:
 ```
-https://raw.githubusercontent.com/imaginariumitaliano/book-companion-content/main/images/book1/ch01/image1.jpg
+https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/book1/ch01/image1.jpg
 ```
 
 ---
@@ -62,13 +62,13 @@ Edit `content/books.json` (the one in this project AND the one in your GitHub co
       "id": "book1",
       "title": "Your Book Title",
       "subtitle": "Series Name, Book 1",
-      "coverImage": "https://raw.githubusercontent.com/imaginariumitaliano/book-companion-content/main/images/book1/cover.jpg",
+      "coverImage": "https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/book1/cover.jpg",
       "chapters": [
         {
           "number": 1,
           "title": "The Beginning",
           "images": [
-            "https://raw.githubusercontent.com/imaginariumitaliano/book-companion-content/main/images/book1/ch01/image1.jpg"
+            "https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/book1/ch01/image1.jpg"
           ]
         }
       ]

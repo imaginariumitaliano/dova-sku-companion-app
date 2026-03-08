@@ -33,7 +33,7 @@ export default function ChapterListScreen({ navigation, route }: Props) {
 
   const renderChapter = ({ item }: { item: Chapter }) => {
     const startIndex = getChapterStartIndex(item.number);
-    const thumbnail = item.images[0];
+    const thumbnail = item.images[0]?.url;
 
     return (
       <TouchableOpacity

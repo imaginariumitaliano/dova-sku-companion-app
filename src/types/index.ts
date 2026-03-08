@@ -1,7 +1,13 @@
+export interface BookImage {
+  url: string;
+  title?: string;
+  description?: string;
+}
+
 export interface Chapter {
   number: number;
   title: string;
-  images: string[];
+  images: BookImage[];
 }
 
 export interface Book {
@@ -18,6 +24,8 @@ export interface BooksContent {
 
 export interface FlatImage {
   url: string;
+  title?: string;
+  description?: string;
   chapterNumber: number;
   chapterTitle: string;
   globalIndex: number;
