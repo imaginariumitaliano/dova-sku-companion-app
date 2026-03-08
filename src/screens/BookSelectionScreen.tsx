@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Image,
+  Dimensions,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -17,6 +18,10 @@ import { Book } from '../types';
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'BookSelection'>;
 };
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const COVER_WIDTH = (SCREEN_WIDTH - 48) / 2;
+const COVER_HEIGHT = COVER_WIDTH * 1.5;
 
 export default function BookSelectionScreen({ navigation }: Props) {
   const { content, loading, error } = useContent();
@@ -34,42 +39,50 @@ export default function BookSelectionScreen({ navigation }: Props) {
     <TouchableOpacity
       style={styles.bookCard}
       onPress={() => navigation.navigate('ChapterList', { bookId: item.id })}
-      activeOpacity={0.8}
+      activeOpacity={0.75}
     >
       {item.coverImage ? (
         <Image
           source={{ uri: item.coverImage }}
-          style={styles.coverImage}
+          style={styles.cover}
           resizeMode="cover"
         />
       ) : (
         <View style={styles.coverPlaceholder}>
-          <Text style={styles.coverPlaceholderIcon}>Book</Text>
+          <Text style={styles.placeholderLabel}>No Cover</Text>
         </View>
       )}
-      <View style={styles.bookInfo}>
-        <Text style={styles.bookTitle}>{item.title}</Text>
+      <View style={styles.bookMeta}>
+        <Text style={styles.bookTitle} numberOfLines={2}>{item.title}</Text>
         {item.subtitle && (
-          <Text style={styles.bookSubtitle}>{item.subtitle}</Text>
+          <Text style={styles.bookSubtitle} numberOfLines={2}>{item.subtitle}</Text>
         )}
-        <Text style={styles.chapterCount}>
-          {item.chapters.length} chapter{item.chapters.length !== 1 ? 's' : ''}
-        </Text>
       </View>
     </TouchableOpacity>
   );
 
+  const books = content?.books ?? [];
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Select a Book</Text>
-      {error && (
-        <Text style={styles.errorText}>Using offline content</Text>
-      )}
+      <View style={styles.header}>
+        <Text style={styles.seriesLabel}>The Dova Sku Series</Text>
+        <Text style={styles.headerTitle}>Book Companion</Text>
+        {error && (
+          <Text style={styles.offlineNote}>Offline mode</Text>
+        )}
+      </View>
+
       <FlatList
-        data={content?.books ?? []}
+        data={books}
         keyExtractor={(item) => item.id}
         renderItem={renderBook}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No books available.</Text>
+        }
       />
     </View>
   );
@@ -92,65 +105,78 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   header: {
-    color: colors.textPrimary,
-    fontSize: 22,
-    fontWeight: '700',
-    padding: 20,
-    paddingBottom: 8,
-  },
-  errorText: {
-    color: colors.amber,
-    fontSize: 13,
     paddingHorizontal: 20,
-    marginBottom: 8,
+    paddingTop: 24,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.cardBorder,
+  },
+  seriesLabel: {
+    color: colors.accent,
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginBottom: 4,
+  },
+  headerTitle: {
+    color: colors.textPrimary,
+    fontSize: 26,
+    fontWeight: '800',
+  },
+  offlineNote: {
+    color: colors.amber,
+    fontSize: 12,
+    marginTop: 6,
   },
   list: {
     padding: 16,
   },
+  row: {
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
   bookCard: {
-    flexDirection: 'row',
+    width: COVER_WIDTH,
     backgroundColor: colors.card,
-    borderRadius: 12,
-    marginBottom: 16,
+    borderRadius: 10,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.cardBorder,
   },
-  coverImage: {
-    width: 90,
-    height: 130,
+  cover: {
+    width: COVER_WIDTH,
+    height: COVER_HEIGHT,
   },
   coverPlaceholder: {
-    width: 90,
-    height: 130,
+    width: COVER_WIDTH,
+    height: COVER_HEIGHT,
     backgroundColor: colors.backgroundSecondary,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  coverPlaceholderIcon: {
+  placeholderLabel: {
     color: colors.textMuted,
     fontSize: 12,
-    fontWeight: '600',
   },
-  bookInfo: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
+  bookMeta: {
+    padding: 10,
   },
   bookTitle: {
     color: colors.textPrimary,
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '700',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   bookSubtitle: {
     color: colors.textMuted,
-    fontSize: 14,
-    marginBottom: 8,
+    fontSize: 12,
+    lineHeight: 16,
   },
-  chapterCount: {
-    color: colors.accent,
-    fontSize: 13,
-    fontWeight: '600',
+  emptyText: {
+    color: colors.textMuted,
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 40,
   },
 });
