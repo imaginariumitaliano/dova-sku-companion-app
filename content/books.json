@@ -1,0 +1,34 @@
+{
+  "books": [
+    {
+      "id": "book1",
+      "title": "Book Title Here",
+      "subtitle": "Series Name, Book 1",
+      "coverImage": "https://raw.githubusercontent.com/imaginariumitaliano/book-companion-content/main/images/book1/cover.jpg",
+      "chapters": [
+        {
+          "number": 1,
+          "title": "Chapter Title Here",
+          "images": [
+            "https://raw.githubusercontent.com/imaginariumitaliano/book-companion-content/main/images/book1/ch01/image1.jpg"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Chapter Title Here",
+          "images": [
+            "https://raw.githubusercontent.com/imaginariumitaliano/book-companion-content/main/images/book1/ch02/image1.jpg",
+            "https://raw.githubusercontent.com/imaginariumitaliano/book-companion-content/main/images/book1/ch02/image2.jpg"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Chapter Title Here",
+          "images": [
+            "https://raw.githubusercontent.com/imaginariumitaliano/book-companion-content/main/images/book1/ch03/image1.jpg"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Book Companion",
+    "slug": "book-companion",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#050710"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.coreyitaliano.bookcompanion"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#050710"
+      },
+      "package": "com.coreyitaliano.bookcompanion"
+    }
+  }
+}
