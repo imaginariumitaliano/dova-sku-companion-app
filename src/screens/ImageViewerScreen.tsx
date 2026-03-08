@@ -1,14 +1,13 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  Image,
-  TouchableOpacity,
   StyleSheet,
-  Dimensions,
   StatusBar,
   ActivityIndicator,
 } from 'react-native';
+// @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
+import ImageViewer from 'react-native-image-zoom-viewer';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -20,15 +19,12 @@ type Props = {
   route: RouteProp<RootStackParamList, 'ImageViewer'>;
 };
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
 export default function ImageViewerScreen({ navigation, route }: Props) {
   const { bookId, startIndex } = route.params;
   const { getFlatImages } = useContent();
   const flatImages = getFlatImages(bookId);
 
   const [currentIndex, setCurrentIndex] = useState(startIndex);
-  const [imageLoading, setImageLoading] = useState(true);
 
   const current = flatImages[currentIndex];
   const total = flatImages.length;
@@ -41,23 +37,9 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
     }
   }, [current, navigation]);
 
-  // Reset loading state when image changes
-  useEffect(() => {
-    setImageLoading(true);
-  }, [currentIndex]);
-
-  const goNext = useCallback(() => {
-    if (currentIndex < total - 1) setCurrentIndex((i) => i + 1);
-  }, [currentIndex, total]);
-
-  const goPrev = useCallback(() => {
-    if (currentIndex > 0) setCurrentIndex((i) => i - 1);
-  }, [currentIndex]);
-
   if (!current) return null;
 
-  const isFirst = currentIndex === 0;
-  const isLast = currentIndex === total - 1;
+  const imageUrls = flatImages.map((img) => ({ url: img.url }));
 
   return (
     <View style={styles.container}>
@@ -80,49 +62,27 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
         )}
       </View>
 
-      {/* Image */}
-      <View style={styles.imageContainer}>
-        {imageLoading && (
-          <View style={styles.imageLoader}>
+      {/* Zoomable + swipeable image viewer */}
+      <View style={styles.viewerContainer}>
+        <ImageViewer
+          imageUrls={imageUrls}
+          index={startIndex}
+          onChange={(index?: number) => setCurrentIndex(index ?? 0)}
+          backgroundColor={colors.background}
+          enableSwipeDown={false}
+          renderIndicator={() => <View />}
+          loadingRender={() => (
             <ActivityIndicator size="large" color={colors.accent} />
-          </View>
-        )}
-        <Image
-          source={{ uri: current.url }}
-          style={styles.image}
-          resizeMode="contain"
-          onLoadStart={() => setImageLoading(true)}
-          onLoadEnd={() => setImageLoading(false)}
+          )}
         />
       </View>
 
-      {/* Bottom controls */}
-      <View style={styles.controls}>
-        <TouchableOpacity
-          style={[styles.navButton, isFirst && styles.navButtonDisabled]}
-          onPress={goPrev}
-          disabled={isFirst}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.navButtonText, isFirst && styles.navButtonTextDisabled]}>
-            Prev
-          </Text>
-        </TouchableOpacity>
-
+      {/* Progress footer */}
+      <View style={styles.footer}>
         <Text style={styles.progress}>
           {currentIndex + 1} / {total}
         </Text>
-
-        <TouchableOpacity
-          style={[styles.navButton, isLast && styles.navButtonDisabled]}
-          onPress={goNext}
-          disabled={isLast}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.navButtonText, isLast && styles.navButtonTextDisabled]}>
-            Next
-          </Text>
-        </TouchableOpacity>
+        <Text style={styles.hint}>Swipe to navigate · Pinch to zoom</Text>
       </View>
     </View>
   );
@@ -159,52 +119,25 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 2,
   },
-  imageContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageLoader: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: SCREEN_WIDTH,
+  viewerContainer: {
     flex: 1,
   },
-  controls: {
-    flexDirection: 'row',
+  footer: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 14,
     paddingBottom: 32,
     borderTopWidth: 1,
     borderTopColor: colors.cardBorder,
     backgroundColor: colors.backgroundSecondary,
-  },
-  navButton: {
-    backgroundColor: colors.accent,
-    paddingHorizontal: 28,
-    paddingVertical: 13,
-    borderRadius: 8,
-    minWidth: 100,
-    alignItems: 'center',
-  },
-  navButtonDisabled: {
-    backgroundColor: colors.card,
-  },
-  navButtonText: {
-    color: colors.textPrimary,
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  navButtonTextDisabled: {
-    color: colors.textMuted,
+    gap: 4,
   },
   progress: {
-    color: colors.textMuted,
+    color: colors.textPrimary,
     fontSize: 14,
+    fontWeight: '600',
+  },
+  hint: {
+    color: colors.textMuted,
+    fontSize: 12,
   },
 });
