@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
@@ -51,6 +52,11 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
       }
     });
     return result;
+  }, [flatImages]);
+
+  // Prefetch all images so Image.getSize() succeeds inside the viewer
+  useEffect(() => {
+    flatImages.forEach((img) => Image.prefetch(img.url));
   }, [flatImages]);
 
   useEffect(() => {
