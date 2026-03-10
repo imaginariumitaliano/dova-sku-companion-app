@@ -39,6 +39,7 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
   const [viewerKey, setViewerKey] = useState(0);
   const [viewerStartIndex, setViewerStartIndex] = useState(startIndex);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [imageSizes, setImageSizes] = useState<Record<string, { width: number; height: number }>>({});
 
   const current = flatImages[currentIndex];
   const total = flatImages.length;
@@ -54,9 +55,15 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
     return result;
   }, [flatImages]);
 
-  // Prefetch all images so Image.getSize() succeeds inside the viewer
+  // Resolve actual image dimensions so the viewer never calls Image.getSize() internally
   useEffect(() => {
-    flatImages.forEach((img) => Image.prefetch(img.url));
+    flatImages.forEach((img) => {
+      Image.getSize(
+        img.url,
+        (width, height) => setImageSizes((prev) => ({ ...prev, [img.url]: { width, height } })),
+        () => {},
+      );
+    });
   }, [flatImages]);
 
   useEffect(() => {
@@ -74,7 +81,10 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
 
   if (!current) return null;
 
-  const imageUrls = flatImages.map((img) => ({ url: img.url }));
+  const imageUrls = flatImages.map((img) => ({
+    url: img.url,
+    ...(imageSizes[img.url] ?? {}),
+  }));
   const activeChapterNumber = current.chapterNumber;
 
   return (
