@@ -26,7 +26,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
       if (USE_LOCAL_CONTENT) {
         setContent(localContent as BooksContent);
       } else {
-        const response = await fetch(CONTENT_URL);
+        const response = await fetch(`${CONTENT_URL}?t=${Date.now()}`, { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         setContent(data);
