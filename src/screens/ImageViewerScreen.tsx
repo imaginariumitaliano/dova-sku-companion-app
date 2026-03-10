@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
-  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
@@ -39,8 +38,6 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
   const [viewerKey, setViewerKey] = useState(0);
   const [viewerStartIndex, setViewerStartIndex] = useState(startIndex);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [imageSizes, setImageSizes] = useState<Record<string, { width: number; height: number }>>({});
-  const [sizesReady, setSizesReady] = useState(false);
 
   const current = flatImages[currentIndex];
   const total = flatImages.length;
@@ -54,26 +51,6 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
       }
     });
     return result;
-  }, [flatImages]);
-
-  // Resolve all image dimensions once, then set state in a single batch
-  useEffect(() => {
-    setSizesReady(false);
-    const sizes: Record<string, { width: number; height: number }> = {};
-    let pending = flatImages.length;
-    if (pending === 0) { setSizesReady(true); return; }
-
-    const done = () => {
-      pending -= 1;
-      if (pending === 0) {
-        setImageSizes(sizes);
-        setSizesReady(true);
-      }
-    };
-
-    flatImages.forEach((img) => {
-      Image.getSize(img.url, (w, h) => { sizes[img.url] = { width: w, height: h }; done(); }, done);
-    });
   }, [flatImages]);
 
   useEffect(() => {
@@ -91,10 +68,7 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
 
   if (!current) return null;
 
-  const imageUrls = flatImages.map((img) => ({
-    url: img.url,
-    ...(imageSizes[img.url] ?? {}),
-  }));
+  const imageUrls = flatImages.map((img) => ({ url: img.url }));
   const activeChapterNumber = current.chapterNumber;
 
   return (
@@ -132,23 +106,17 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
 
       {/* Zoomable + swipeable image viewer — key forces remount on chapter jump */}
       <View key={viewerKey} style={styles.viewerContainer}>
-        {sizesReady ? (
-          <ImageViewer
-            imageUrls={imageUrls}
-            index={viewerStartIndex}
-            onChange={(index?: number) => setCurrentIndex(index ?? 0)}
-            backgroundColor={colors.background}
-            enableSwipeDown={false}
-            renderIndicator={() => <View />}
-            loadingRender={() => (
-              <ActivityIndicator size="large" color={colors.accent} />
-            )}
-          />
-        ) : (
-          <View style={styles.loadingContainer}>
+        <ImageViewer
+          imageUrls={imageUrls}
+          index={viewerStartIndex}
+          onChange={(index?: number) => setCurrentIndex(index ?? 0)}
+          backgroundColor={colors.background}
+          enableSwipeDown={false}
+          renderIndicator={() => <View />}
+          loadingRender={() => (
             <ActivityIndicator size="large" color={colors.accent} />
-          </View>
-        )}
+          )}
+        />
       </View>
 
       {/* Progress footer */}
@@ -268,11 +236,6 @@ const styles = StyleSheet.create({
   },
   viewerContainer: {
     flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   footer: {
     alignItems: 'center',
