@@ -8,11 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
-  Dimensions,
 } from 'react-native';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-// Passed to ImageViewer so it never needs to call Image.getSize() — prevents black screens
 import { SafeAreaView } from 'react-native-safe-area-context';
 // @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -72,11 +68,7 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
 
   if (!current) return null;
 
-  const imageUrls = flatImages.map((img) => ({
-    url: img.url,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-  }));
+  const imageUrls = flatImages.map((img) => ({ url: img.url }));
   const activeChapterNumber = current.chapterNumber;
 
   return (
