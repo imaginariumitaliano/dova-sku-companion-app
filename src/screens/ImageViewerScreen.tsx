@@ -40,6 +40,7 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
   const [viewerStartIndex, setViewerStartIndex] = useState(startIndex);
   const [menuVisible, setMenuVisible] = useState(false);
   const [imageSizes, setImageSizes] = useState<Record<string, { width: number; height: number }>>({});
+  const [sizesReady, setSizesReady] = useState(false);
 
   const current = flatImages[currentIndex];
   const total = flatImages.length;
@@ -55,14 +56,23 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
     return result;
   }, [flatImages]);
 
-  // Resolve actual image dimensions so the viewer never calls Image.getSize() internally
+  // Resolve all image dimensions once, then set state in a single batch
   useEffect(() => {
+    setSizesReady(false);
+    const sizes: Record<string, { width: number; height: number }> = {};
+    let pending = flatImages.length;
+    if (pending === 0) { setSizesReady(true); return; }
+
+    const done = () => {
+      pending -= 1;
+      if (pending === 0) {
+        setImageSizes(sizes);
+        setSizesReady(true);
+      }
+    };
+
     flatImages.forEach((img) => {
-      Image.getSize(
-        img.url,
-        (width, height) => setImageSizes((prev) => ({ ...prev, [img.url]: { width, height } })),
-        () => {},
-      );
+      Image.getSize(img.url, (w, h) => { sizes[img.url] = { width: w, height: h }; done(); }, done);
     });
   }, [flatImages]);
 
@@ -122,17 +132,23 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
 
       {/* Zoomable + swipeable image viewer — key forces remount on chapter jump */}
       <View key={viewerKey} style={styles.viewerContainer}>
-        <ImageViewer
-          imageUrls={imageUrls}
-          index={viewerStartIndex}
-          onChange={(index?: number) => setCurrentIndex(index ?? 0)}
-          backgroundColor={colors.background}
-          enableSwipeDown={false}
-          renderIndicator={() => <View />}
-          loadingRender={() => (
+        {sizesReady ? (
+          <ImageViewer
+            imageUrls={imageUrls}
+            index={viewerStartIndex}
+            onChange={(index?: number) => setCurrentIndex(index ?? 0)}
+            backgroundColor={colors.background}
+            enableSwipeDown={false}
+            renderIndicator={() => <View />}
+            loadingRender={() => (
+              <ActivityIndicator size="large" color={colors.accent} />
+            )}
+          />
+        ) : (
+          <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={colors.accent} />
-          )}
-        />
+          </View>
+        )}
       </View>
 
       {/* Progress footer */}
@@ -252,6 +268,11 @@ const styles = StyleSheet.create({
   },
   viewerContainer: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   footer: {
     alignItems: 'center',
