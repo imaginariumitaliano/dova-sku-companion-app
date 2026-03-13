@@ -40,7 +40,6 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const current = flatImages[currentIndex];
-  const total = flatImages.length;
 
   // Build chapter index once
   const chapters = useMemo<ChapterEntry[]>(() => {
@@ -88,7 +87,7 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
               </Text>
             )}
             {current.description && (
-              <Text style={styles.imageDescription} numberOfLines={2}>
+              <Text style={styles.imageDescription}>
                 {current.description}
               </Text>
             )}
@@ -119,9 +118,8 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
         />
       </View>
 
-      {/* Progress footer */}
+      {/* Footer hint */}
       <View style={styles.footer}>
-        <Text style={styles.progress}>{currentIndex + 1} / {total}</Text>
         <Text style={styles.hint}>Swipe to navigate · Pinch to zoom</Text>
       </View>
 
@@ -180,14 +178,14 @@ const styles = StyleSheet.create({
   },
   chapterBadge: {
     paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 8,
+    paddingBottom: 8,
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
   },
   badgeRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   badgeMeta: {
     flex: 1,
@@ -239,17 +237,11 @@ const styles = StyleSheet.create({
   },
   footer: {
     alignItems: 'center',
-    paddingVertical: 14,
-    paddingBottom: 32,
+    paddingTop: 8,
+    paddingBottom: 16,
     borderTopWidth: 1,
     borderTopColor: colors.cardBorder,
     backgroundColor: colors.backgroundSecondary,
-    gap: 4,
-  },
-  progress: {
-    color: colors.textPrimary,
-    fontSize: 14,
-    fontWeight: '600',
   },
   hint: {
     color: colors.textMuted,
