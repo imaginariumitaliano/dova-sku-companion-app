@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   chapterBadge: {
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 8,
+    paddingBottom: 0,
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
   },
