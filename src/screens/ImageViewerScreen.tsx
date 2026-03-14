@@ -74,24 +74,12 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Chapter badge + jump button */}
+      {/* Compact header: chapter label + jump button */}
       <View style={styles.chapterBadge}>
         <View style={styles.badgeRow}>
-          <View style={styles.badgeMeta}>
-            <Text style={styles.chapterLabel}>
-              Chapter {current.chapterNumber} · {current.chapterTitle}
-            </Text>
-            {current.title && (
-              <Text style={styles.imageTitle} numberOfLines={1}>
-                {current.title}
-              </Text>
-            )}
-            {current.description && (
-              <Text style={styles.imageDescription}>
-                {current.description}
-              </Text>
-            )}
-          </View>
+          <Text style={styles.chapterLabel}>
+            Chapter {current.chapterNumber} · {current.chapterTitle}
+          </Text>
           <TouchableOpacity
             style={styles.jumpButton}
             onPress={() => setMenuVisible(true)}
@@ -118,8 +106,11 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
         />
       </View>
 
-      {/* Footer hint */}
+      {/* Caption + hint */}
       <View style={styles.footer}>
+        {current.description && (
+          <Text style={styles.imageDescription}>{current.description}</Text>
+        )}
         <Text style={styles.hint}>Swipe to navigate · Pinch to zoom</Text>
       </View>
 
@@ -178,37 +169,28 @@ const styles = StyleSheet.create({
   },
   chapterBadge: {
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 0,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
   },
   badgeRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  badgeMeta: {
-    flex: 1,
-    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   chapterLabel: {
+    flex: 1,
     color: colors.accent,
     fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 1.5,
-    marginBottom: 2,
-  },
-  imageTitle: {
-    color: colors.textPrimary,
-    fontSize: 15,
-    fontWeight: '600',
-    marginTop: 4,
+    marginRight: 12,
   },
   imageDescription: {
     color: colors.textMuted,
     fontSize: 13,
-    marginTop: 2,
+    marginBottom: 6,
   },
   jumpButton: {
     alignItems: 'center',
@@ -236,8 +218,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   footer: {
-    alignItems: 'center',
-    paddingTop: 8,
+    paddingHorizontal: 16,
+    paddingTop: 10,
     paddingBottom: 16,
     borderTopWidth: 1,
     borderTopColor: colors.cardBorder,
@@ -246,6 +228,7 @@ const styles = StyleSheet.create({
   hint: {
     color: colors.textMuted,
     fontSize: 12,
+    textAlign: 'center',
   },
   // Modal
   modalOverlay: {
