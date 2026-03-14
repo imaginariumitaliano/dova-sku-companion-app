@@ -8,7 +8,10 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
+  Dimensions,
 } from 'react-native';
+
+const VIEWER_HEIGHT = Dimensions.get('window').width * 1.5;
 import { SafeAreaView } from 'react-native-safe-area-context';
 // @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -215,7 +218,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   viewerContainer: {
-    flex: 1,
+    height: VIEWER_HEIGHT,
   },
   footer: {
     paddingHorizontal: 16,
