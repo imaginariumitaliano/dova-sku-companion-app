@@ -10,8 +10,6 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
-
-const VIEWER_HEIGHT = Dimensions.get('window').width * 1.5;
 import { SafeAreaView } from 'react-native-safe-area-context';
 // @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -20,6 +18,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useContent } from '../context/ContentContext';
 import { colors } from '../theme/colors';
+
+const VIEWER_HEIGHT = Dimensions.get('window').width * 1.5;
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'ImageViewer'>;
