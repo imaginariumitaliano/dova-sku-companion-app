@@ -11,6 +11,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useContent } from '../context/ContentContext';
+import { useProgress } from '../context/ProgressContext';
 import { colors } from '../theme/colors';
 import { Chapter } from '../types';
 
@@ -22,11 +23,15 @@ type Props = {
 export default function ChapterListScreen({ navigation, route }: Props) {
   const { bookId } = route.params;
   const { getBook, getFlatImages } = useContent();
+  const { isRead, toggleRead, canMarkRead, canMarkUnread } = useProgress();
   const book = getBook(bookId);
 
   if (!book) return null;
 
   const flatImages = getFlatImages(bookId);
+  const totalChapters = book.chapters.length;
+  const readCount = book.chapters.filter((c) => isRead(bookId, c.number)).length;
+  const progressPct = totalChapters > 0 ? readCount / totalChapters : 0;
 
   const getChapterStartIndex = (chapterNumber: number) =>
     flatImages.findIndex((img) => img.chapterNumber === chapterNumber);
@@ -34,21 +39,19 @@ export default function ChapterListScreen({ navigation, route }: Props) {
   const renderChapter = ({ item }: { item: Chapter }) => {
     const startIndex = getChapterStartIndex(item.number);
     const thumbnail = item.images[0]?.url;
+    const read = isRead(bookId, item.number);
+    const canRead = canMarkRead(bookId, item.number);
+    const canUnread = canMarkUnread(bookId, item.number);
+    const checkDisabled = read ? !canUnread : !canRead;
 
     return (
       <TouchableOpacity
-        style={styles.chapterCard}
-        onPress={() =>
-          navigation.navigate('ImageViewer', { bookId, startIndex })
-        }
+        style={[styles.chapterCard, read && styles.chapterCardRead]}
+        onPress={() => navigation.navigate('ImageViewer', { bookId, startIndex })}
         activeOpacity={0.8}
       >
         {thumbnail ? (
-          <Image
-            source={{ uri: thumbnail }}
-            style={styles.thumbnail}
-            resizeMode="cover"
-          />
+          <Image source={{ uri: thumbnail }} style={styles.thumbnail} resizeMode="cover" />
         ) : (
           <View style={styles.thumbnailPlaceholder}>
             <Text style={styles.placeholderText}>No Image</Text>
@@ -61,13 +64,31 @@ export default function ChapterListScreen({ navigation, route }: Props) {
             {item.images.length} image{item.images.length !== 1 ? 's' : ''}
           </Text>
         </View>
+        <TouchableOpacity
+          style={[styles.checkButton, read && styles.checkButtonRead, checkDisabled && styles.checkButtonDisabled]}
+          onPress={() => toggleRead(bookId, item.number)}
+          disabled={checkDisabled}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        >
+          <Text style={[styles.checkIcon, read && styles.checkIconRead, checkDisabled && styles.checkIconDisabled]}>
+            {read ? '✓' : '○'}
+          </Text>
+        </TouchableOpacity>
       </TouchableOpacity>
     );
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.bookLabel}>{book.title}</Text>
+      <View style={styles.progressHeader}>
+        <View style={styles.progressLabelRow}>
+          <Text style={styles.bookLabel}>{book.title}</Text>
+          <Text style={styles.progressCount}>{readCount} / {totalChapters} chapters read</Text>
+        </View>
+        <View style={styles.progressTrack}>
+          <View style={[styles.progressFill, { width: `${progressPct * 100}%` }]} />
+        </View>
+      </View>
       <FlatList
         data={book.chapters}
         keyExtractor={(item) => String(item.number)}
@@ -83,24 +104,55 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  progressHeader: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.cardBorder,
+  },
+  progressLabelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   bookLabel: {
     color: colors.textMuted,
     fontSize: 13,
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 4,
+  },
+  progressCount: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  progressTrack: {
+    height: 4,
+    backgroundColor: colors.backgroundSecondary,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: 4,
+    backgroundColor: colors.accent,
+    borderRadius: 2,
   },
   list: {
     padding: 16,
   },
   chapterCard: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.card,
     borderRadius: 10,
     marginBottom: 12,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.cardBorder,
+  },
+  chapterCardRead: {
+    borderColor: 'rgba(255, 107, 44, 0.3)',
+    backgroundColor: 'rgba(255, 107, 44, 0.04)',
   },
   thumbnail: {
     width: 80,
@@ -139,5 +191,25 @@ const styles = StyleSheet.create({
   imageCount: {
     color: colors.textMuted,
     fontSize: 12,
+  },
+  checkButton: {
+    width: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingRight: 12,
+  },
+  checkButtonRead: {},
+  checkButtonDisabled: {
+    opacity: 0.3,
+  },
+  checkIcon: {
+    fontSize: 22,
+    color: colors.textMuted,
+  },
+  checkIconRead: {
+    color: colors.accent,
+  },
+  checkIconDisabled: {
+    color: colors.textMuted,
   },
 });
