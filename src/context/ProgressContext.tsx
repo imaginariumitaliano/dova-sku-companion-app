@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import * as FileSystem from 'expo-file-system/legacy';
 
 const PROGRESS_FILE = (FileSystem.documentDirectory ?? '') + 'progress.json';
@@ -34,16 +34,16 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     (data[bookId] ?? []).includes(chapterNumber);
 
   // Returns the highest chapter N such that chapters 1..N are all read
-  const getConsecutiveProgress = (bookId: string): number => {
+  const getConsecutiveProgress = useCallback((bookId: string): number => {
     const readSet = new Set(data[bookId] ?? []);
     let n = 0;
     while (readSet.has(n + 1)) n++;
     return n;
-  };
+  }, [data]);
 
   // Can mark as read only if the previous chapter is already read (or this is ch 1)
   const canMarkRead = (bookId: string, chapterNumber: number): boolean => {
-    if (chapterNumber === 1) return true;
+    if (chapterNumber <= 1) return true;
     return isRead(bookId, chapterNumber - 1);
   };
 
