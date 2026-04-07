@@ -13,7 +13,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { colors } from '../theme/colors';
 import { CODEX_URL } from '../config';
-import { Character } from './CharacterGuideScreen';
+import { Character, StoryEvent } from './CharacterGuideScreen';
 import { useUnlock } from '../hooks/useUnlock';
 
 type Props = {
@@ -125,6 +125,21 @@ export default function CharacterDetailScreen({ route, navigation }: Props) {
             </View>
           ))}
         </View>
+
+        {character.storyEvents && character.storyEvents.filter((e: StoryEvent) => isUnlocked(e.unlockAfter)).length > 0 && (
+          <>
+            <View style={styles.divider} />
+            <Text style={styles.bioHeader}>Story Events</Text>
+            {character.storyEvents
+              .filter((e: StoryEvent) => isUnlocked(e.unlockAfter))
+              .map((e: StoryEvent, i: number) => (
+                <View key={i} style={styles.storyEvent}>
+                  <Text style={styles.storyEventTitle}>{e.chapterTitle}</Text>
+                  <Text style={styles.storyEventText}>{e.event}</Text>
+                </View>
+              ))}
+          </>
+        )}
       </View>
     </ScrollView>
   );
@@ -172,4 +187,19 @@ const styles = StyleSheet.create({
   bookTags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 },
   bookTag: { paddingVertical: 5, paddingHorizontal: 12, borderRadius: 20, borderWidth: 1, borderColor: colors.accent },
   bookTagText: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  storyEvent: {
+    marginBottom: 16,
+    paddingLeft: 12,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.accent,
+  },
+  storyEventTitle: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
+  storyEventText: { color: colors.textPrimary, fontSize: 14, lineHeight: 22 },
 });

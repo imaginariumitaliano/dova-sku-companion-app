@@ -27,6 +27,12 @@ type CharacterVersion = {
   bio: string;
 };
 
+export type StoryEvent = {
+  unlockAfter: UnlockCondition;
+  chapterTitle: string;
+  event: string;
+};
+
 export type Character = {
   id: string;
   name: string;
@@ -38,6 +44,7 @@ export type Character = {
   books: string[];
   unlockAfter: UnlockCondition;
   versions?: CharacterVersion[];
+  storyEvents?: StoryEvent[];
 };
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
