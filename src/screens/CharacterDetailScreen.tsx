@@ -7,7 +7,11 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
+  TouchableOpacity,
+  Modal,
 } from 'react-native';
+// @ts-ignore
+import ImageViewer from 'react-native-image-zoom-viewer';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -30,9 +34,10 @@ export default function CharacterDetailScreen({ route, navigation }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const { isUnlocked } = useUnlock();
+  const [zoomVisible, setZoomVisible] = useState(false);
 
   useEffect(() => {
-    fetch(CODEX_URL)
+    fetch(CODEX_URL, { headers: { 'Cache-Control': 'no-cache' } })
       .then((r) => r.json())
       .then((data) => {
         const found = (data.characters ?? []).find((c: Character) => c.id === characterId);
@@ -79,9 +84,23 @@ export default function CharacterDetailScreen({ route, navigation }: Props) {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {displayImage ? (
-        <View style={styles.portraitContainer}>
-          <Image source={{ uri: displayImage }} style={styles.portrait} resizeMode="cover" />
-        </View>
+        <>
+          <TouchableOpacity activeOpacity={0.9} onPress={() => setZoomVisible(true)}>
+            <View style={styles.portraitContainer}>
+              <Image source={{ uri: displayImage }} style={styles.portrait} resizeMode="cover" />
+            </View>
+          </TouchableOpacity>
+          <Modal visible={zoomVisible} transparent animationType="fade" onRequestClose={() => setZoomVisible(false)}>
+            <ImageViewer
+              imageUrls={[{ url: displayImage }]}
+              enableSwipeDown
+              onSwipeDown={() => setZoomVisible(false)}
+              onCancel={() => setZoomVisible(false)}
+              backgroundColor="rgba(0,0,0,0.95)"
+              renderIndicator={() => <></>}
+            />
+          </Modal>
+        </>
       ) : (
         <View style={styles.portraitPlaceholder}>
           <Text style={styles.placeholderInitial}>{character.name.charAt(0)}</Text>
@@ -151,7 +170,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
   errorText: { color: colors.textMuted, fontSize: 15 },
   portraitContainer: { width: SCREEN_WIDTH, height: IMAGE_HEIGHT, overflow: 'hidden' },
-  portrait: { width: SCREEN_WIDTH, height: IMAGE_HEIGHT * 1.5, position: 'absolute', top: 0 },
+  portrait: { width: SCREEN_WIDTH, height: IMAGE_HEIGHT * 1.5, position: 'absolute', top: 25 },
   portraitPlaceholder: {
     width: SCREEN_WIDTH,
     height: IMAGE_HEIGHT,

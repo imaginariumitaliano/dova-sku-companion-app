@@ -60,7 +60,7 @@ export default function CharacterGuideScreen({ navigation }: Props) {
   const { spoilerMode, enableSpoilerMode } = useSpoiler();
 
   useEffect(() => {
-    fetch(CODEX_URL)
+    fetch(CODEX_URL, { headers: { 'Cache-Control': 'no-cache' } })
       .then((r) => r.json())
       .then((data) => {
         setCharacters(data.characters ?? []);
@@ -128,7 +128,9 @@ export default function CharacterGuideScreen({ navigation }: Props) {
         activeOpacity={0.75}
       >
         {resolved.image ? (
-          <Image source={{ uri: resolved.image }} style={styles.cardImage} resizeMode="cover" />
+          <View style={styles.cardImageContainer}>
+            <Image source={{ uri: resolved.image }} style={styles.cardImageInner} resizeMode="cover" />
+          </View>
         ) : (
           <View style={styles.cardImagePlaceholder}>
             <Text style={styles.placeholderInitial}>{item.name.charAt(0)}</Text>
@@ -209,7 +211,8 @@ const styles = StyleSheet.create({
     borderColor: colors.cardBorder,
     opacity: 0.5,
   },
-  cardImage: { width: CARD_WIDTH, height: CARD_IMAGE_HEIGHT },
+  cardImageContainer: { width: CARD_WIDTH, height: CARD_IMAGE_HEIGHT, overflow: 'hidden' },
+  cardImageInner: { width: CARD_WIDTH, height: CARD_IMAGE_HEIGHT * 1.15, position: 'absolute', top: 20 },
   cardImagePlaceholder: {
     width: CARD_WIDTH,
     height: CARD_IMAGE_HEIGHT,
