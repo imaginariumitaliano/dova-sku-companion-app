@@ -31,6 +31,46 @@ const WORLD_ORDER = ['earth', 'catora', 'tual', 'seutor', 'patchave'];
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const IMAGE_HEIGHT = SCREEN_WIDTH * 0.6;
 
+function WorldCard({
+  world,
+  onZoom,
+}: {
+  world: World;
+  onZoom: (world: World) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <View style={styles.card}>
+      {world.image ? (
+        <TouchableOpacity activeOpacity={0.9} onPress={() => onZoom(world)}>
+          <Image source={{ uri: world.image }} style={styles.worldImage} resizeMode="cover" />
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.imagePlaceholder}>
+          <Text style={styles.placeholderInitial}>{world.name.charAt(0)}</Text>
+        </View>
+      )}
+      <View style={styles.cardBody}>
+        <Text style={styles.worldName}>{world.name}</Text>
+        {world.system && (
+          <Text style={styles.worldSystem}>{world.system} System</Text>
+        )}
+        <TouchableOpacity style={styles.descToggle} onPress={() => setExpanded((v) => !v)} activeOpacity={0.7}>
+          <Text style={styles.descToggleText}>Description</Text>
+          <Text style={styles.descChevron}>{expanded ? '▲' : '▼'}</Text>
+        </TouchableOpacity>
+        {expanded && (
+          <>
+            <View style={styles.divider} />
+            <Text style={styles.worldDescription}>{world.description}</Text>
+          </>
+        )}
+      </View>
+    </View>
+  );
+}
+
 export default function WorldsScreen() {
   const [worlds, setWorlds] = useState<World[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,27 +134,7 @@ export default function WorldsScreen() {
         }
 
         return (
-          <View key={world.id} style={styles.card}>
-            {world.image ? (
-              <>
-                <TouchableOpacity activeOpacity={0.9} onPress={() => setZoomWorld(world)}>
-                  <Image source={{ uri: world.image }} style={styles.worldImage} resizeMode="cover" />
-                </TouchableOpacity>
-              </>
-            ) : (
-              <View style={styles.imagePlaceholder}>
-                <Text style={styles.placeholderInitial}>{world.name.charAt(0)}</Text>
-              </View>
-            )}
-            <View style={styles.cardBody}>
-              <Text style={styles.worldName}>{world.name}</Text>
-              {world.system && (
-                <Text style={styles.worldSystem}>{world.system} System</Text>
-              )}
-              <View style={styles.divider} />
-              <Text style={styles.worldDescription}>{world.description}</Text>
-            </View>
-          </View>
+          <WorldCard key={world.id} world={world} onZoom={setZoomWorld} />
         );
       })}
 
@@ -186,9 +206,29 @@ const styles = StyleSheet.create({
   mysteryIcon: { color: colors.textMuted, fontSize: 48, fontWeight: '800', opacity: 0.4 },
   cardBody: { padding: 16 },
   worldName: { color: colors.textPrimary, fontSize: 20, fontWeight: '800', marginBottom: 2 },
-  worldSystem: { color: colors.accent, fontSize: 13, fontWeight: '600', marginBottom: 4 },
+  worldSystem: { color: colors.accent, fontSize: 13, fontWeight: '600', marginBottom: 8 },
   lockedName: { color: colors.textMuted, fontSize: 18, fontWeight: '800' },
   lockedSub: { color: colors.textMuted, fontSize: 13, marginTop: 4 },
-  divider: { height: 1, backgroundColor: colors.cardBorder, marginVertical: 12 },
+  descToggle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.cardBorder,
+    marginTop: 4,
+  },
+  descToggleText: {
+    color: colors.textMuted,
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+  },
+  descChevron: {
+    color: colors.textMuted,
+    fontSize: 10,
+  },
+  divider: { height: 1, backgroundColor: colors.cardBorder, marginBottom: 12 },
   worldDescription: { color: colors.textPrimary, fontSize: 14, lineHeight: 22 },
 });
