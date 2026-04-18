@@ -111,6 +111,12 @@ export default function BookSelectionScreen({ navigation }: Props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.howToButton}
+            onPress={() => navigation.navigate('Worlds')}
+          >
+            <Text style={styles.howToButtonText}>Worlds</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.howToButton}
             onPress={() => navigation.navigate('Timeline')}
           >
             <Text style={styles.howToButtonText}>Timeline</Text>
