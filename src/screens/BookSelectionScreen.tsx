@@ -34,7 +34,7 @@ export default function BookSelectionScreen({ navigation }: Props) {
   const [bgWidth, setBgWidth] = useState(SCREEN_WIDTH);
   const insets = useSafeAreaInsets();
 
-  const BG_URL = 'https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/App-website-background.png';
+  const BG_URL = 'https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/companion_app_background.png';
 
   useEffect(() => {
     Image.getSize(BG_URL, (w, h) => {
