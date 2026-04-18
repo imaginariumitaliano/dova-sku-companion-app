@@ -25,6 +25,7 @@ type CharacterVersion = {
   unlockAfter: UnlockCondition;
   image: string | null;
   bio: string;
+  nicknames?: string[];
 };
 
 export type StoryEvent = {
@@ -90,14 +91,18 @@ export default function CharacterGuideScreen({ navigation }: Props) {
   }
 
   // Resolve the current display state for a character (highest unlocked version)
-  const resolveCharacter = (char: Character): { image: string | null; bio: string } => {
+  const resolveCharacter = (char: Character): { image: string | null; bio: string; nicknames: string[] } => {
     if (!char.versions || char.versions.length === 0) {
-      return { image: char.image, bio: char.bio };
+      return { image: char.image, bio: char.bio, nicknames: char.nicknames };
     }
-    let resolved = { image: char.image, bio: char.bio };
+    let resolved = { image: char.image, bio: char.bio, nicknames: char.nicknames };
     for (const version of char.versions) {
       if (isUnlocked(version.unlockAfter)) {
-        resolved = { image: version.image, bio: version.bio };
+        resolved = {
+          image: version.image,
+          bio: version.bio,
+          nicknames: version.nicknames ?? resolved.nicknames,
+        };
       }
     }
     return resolved;

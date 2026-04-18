@@ -72,11 +72,13 @@ export default function CharacterDetailScreen({ route, navigation }: Props) {
   // Resolve highest unlocked version
   let displayImage = character.image;
   let displayBio = character.bio;
+  let displayNicknames = character.nicknames;
   if (character.versions && character.versions.length > 0) {
     for (const version of character.versions) {
       if (isUnlocked(version.unlockAfter)) {
         displayImage = version.image;
         displayBio = version.bio;
+        if (version.nicknames) displayNicknames = version.nicknames;
       }
     }
   }
@@ -110,9 +112,9 @@ export default function CharacterDetailScreen({ route, navigation }: Props) {
       <View style={styles.body}>
         <Text style={styles.name}>{character.name}</Text>
 
-        {character.nicknames.length > 0 && (
+        {displayNicknames.length > 0 && (
           <Text style={styles.nicknames}>
-            "{character.nicknames.join('" · "')}"
+            "{displayNicknames.join('" · "')}"
           </Text>
         )}
 
