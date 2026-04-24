@@ -202,6 +202,25 @@ export default function BookSelectionScreen({ navigation }: Props) {
         ListEmptyComponent={
           <Text style={styles.emptyText}>No books available.</Text>
         }
+        ListFooterComponent={
+          <View style={styles.row}>
+            <View style={[styles.bookCard, styles.comingSoonCard]}>
+              <View style={styles.comingSoonCover}>
+                <View style={styles.comingSoonBannerWrap}>
+                  <Text style={styles.comingSoonBannerText}>Coming Soon</Text>
+                </View>
+              </View>
+              <View style={styles.bookMeta}>
+                <Text style={styles.bookTitle} numberOfLines={2}>TBD The Dova Sku Series - Book 3</Text>
+                <View style={styles.progressTrack}>
+                  <View style={[styles.progressFill, { width: '0%' }]} />
+                </View>
+                <Text style={styles.progressLabel}>0 / TBD ch</Text>
+              </View>
+            </View>
+            <View style={{ width: COVER_WIDTH }} />
+          </View>
+        }
       />
     </View>
   );
@@ -381,5 +400,33 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 10,
     fontWeight: '600',
+  },
+  comingSoonCard: {
+    opacity: 0.85,
+  },
+  comingSoonCover: {
+    width: COVER_WIDTH,
+    height: COVER_HEIGHT,
+    backgroundColor: '#3a3a3a',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  comingSoonBannerWrap: {
+    position: 'absolute',
+    top: COVER_HEIGHT * 0.28,
+    left: -COVER_WIDTH * 0.2,
+    width: COVER_WIDTH * 1.4,
+    backgroundColor: colors.accent,
+    paddingVertical: 8,
+    alignItems: 'center',
+    transform: [{ rotate: '-35deg' }],
+  },
+  comingSoonBannerText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
   },
 });
