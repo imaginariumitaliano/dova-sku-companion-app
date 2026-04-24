@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   },
   comingSoonBannerWrap: {
     position: 'absolute',
-    top: COVER_HEIGHT * 0.28,
+    top: COVER_HEIGHT * 0.44,
     left: -COVER_WIDTH * 0.2,
     width: COVER_WIDTH * 1.4,
     backgroundColor: colors.accent,
