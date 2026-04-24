@@ -17,6 +17,11 @@ import { CODEX_URL } from '../config';
 import { useUnlock, UnlockCondition } from '../hooks/useUnlock';
 import { useSpoiler } from '../context/SpoilerContext';
 
+type WorldVersion = {
+  unlockAfter: UnlockCondition;
+  description: string;
+};
+
 type World = {
   id: string;
   name: string;
@@ -24,6 +29,7 @@ type World = {
   image?: string;
   description: string;
   unlockAfter: UnlockCondition | null;
+  versions?: WorldVersion[];
 };
 
 const WORLD_ORDER = ['earth', 'catora', 'tual', 'seutor', 'patchave'];
@@ -39,6 +45,16 @@ function WorldCard({
   onZoom: (world: World) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const { isUnlocked } = useUnlock();
+
+  let displayDescription = world.description;
+  if (world.versions && world.versions.length > 0) {
+    for (const version of world.versions) {
+      if (isUnlocked(version.unlockAfter)) {
+        displayDescription = version.description;
+      }
+    }
+  }
 
   return (
     <View style={styles.card}>
@@ -63,7 +79,7 @@ function WorldCard({
         {expanded && (
           <>
             <View style={styles.divider} />
-            <Text style={styles.worldDescription}>{world.description}</Text>
+            <Text style={styles.worldDescription}>{displayDescription}</Text>
           </>
         )}
       </View>
