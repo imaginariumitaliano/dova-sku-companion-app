@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
-  Image,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
@@ -17,9 +17,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useContent } from '../context/ContentContext';
-import { useBookmarks } from '../context/BookmarkContext';
 import { colors } from '../theme/colors';
 
+const VIEWER_HEIGHT = Dimensions.get('window').width * 1.5;
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'ImageViewer'>;
@@ -34,10 +34,8 @@ interface ChapterEntry {
 
 export default function ImageViewerScreen({ navigation, route }: Props) {
   const { bookId, startIndex } = route.params;
-  const { getFlatImages, getBook } = useContent();
-  const { addBookmark, removeBookmark, isBookmarked } = useBookmarks();
+  const { getFlatImages } = useContent();
   const flatImages = getFlatImages(bookId);
-  const bookTitle = getBook(bookId)?.title ?? '';
 
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [viewerKey, setViewerKey] = useState(0);
@@ -72,27 +70,6 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
 
   if (!current) return null;
 
-  const bookmarkId = `${bookId}-${current.globalIndex}`;
-  const bookmarked = isBookmarked(bookmarkId);
-
-  const toggleBookmark = () => {
-    if (bookmarked) {
-      removeBookmark(bookmarkId);
-    } else {
-      addBookmark({
-        id: bookmarkId,
-        bookId,
-        bookTitle,
-        chapterNumber: current.chapterNumber,
-        chapterTitle: current.chapterTitle,
-        imageUrl: current.url,
-        imageDescription: current.description,
-        globalIndex: current.globalIndex,
-        savedAt: Date.now(),
-      });
-    }
-  };
-
   const imageUrls = flatImages.map((img) => ({ url: img.url }));
   const activeChapterNumber = current.chapterNumber;
 
@@ -100,7 +77,24 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Full-screen image viewer */}
+      {/* Compact header: chapter label + jump button */}
+      <View style={styles.chapterBadge}>
+        <View style={styles.badgeRow}>
+          <Text style={styles.chapterLabel}>
+            Chapter {current.chapterNumber} · {current.chapterTitle}
+          </Text>
+          <TouchableOpacity
+            style={styles.jumpButton}
+            onPress={() => setMenuVisible(true)}
+            activeOpacity={0.75}
+          >
+            <Text style={styles.jumpButtonIcon}>☰</Text>
+            <Text style={styles.jumpButtonLabel}>Chapters</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Zoomable + swipeable image viewer — key forces remount on chapter jump */}
       <View key={viewerKey} style={styles.viewerContainer}>
         <ImageViewer
           imageUrls={imageUrls}
@@ -109,55 +103,19 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
           backgroundColor={colors.background}
           enableSwipeDown={false}
           renderIndicator={() => <View />}
-          renderImage={(props: any) => (
-            <Image {...props} resizeMode="cover" />
-          )}
           loadingRender={() => (
             <ActivityIndicator size="large" color={colors.accent} />
           )}
         />
       </View>
 
-      {/* Header overlay */}
-      <SafeAreaView style={styles.headerOverlay} pointerEvents="box-none">
-        <View style={styles.chapterBadge}>
-          <View style={styles.badgeRow}>
-            <Text style={styles.chapterLabel}>
-              Chapter {current.chapterNumber} · {current.chapterTitle}
-            </Text>
-            <View style={styles.headerButtons}>
-              <TouchableOpacity
-                style={styles.jumpButton}
-                onPress={toggleBookmark}
-                activeOpacity={0.75}
-              >
-                <Text style={[styles.jumpButtonIcon, bookmarked && styles.bookmarkedIcon]}>
-                  {bookmarked ? '★' : '☆'}
-                </Text>
-                <Text style={styles.jumpButtonLabel}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.jumpButton}
-                onPress={() => setMenuVisible(true)}
-                activeOpacity={0.75}
-              >
-                <Text style={styles.jumpButtonIcon}>☰</Text>
-                <Text style={styles.jumpButtonLabel}>Chapters</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </SafeAreaView>
-
-      {/* Footer overlay */}
-      <SafeAreaView style={styles.footerOverlay} pointerEvents="none">
-        <View style={styles.footer}>
-          {current.description && (
-            <Text style={styles.imageDescription}>{current.description}</Text>
-          )}
-          <Text style={styles.hint}>Swipe to navigate · Pinch to zoom</Text>
-        </View>
-      </SafeAreaView>
+      {/* Caption + hint */}
+      <View style={styles.footer}>
+        {current.description && (
+          <Text style={styles.imageDescription}>{current.description}</Text>
+        )}
+        <Text style={styles.hint}>Swipe to navigate · Pinch to zoom</Text>
+      </View>
 
       {/* Chapter jump modal */}
       <Modal
@@ -212,25 +170,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  viewerContainer: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  headerOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-  },
-  footerOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
   chapterBadge: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: 'rgba(5, 7, 16, 0.75)',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.cardBorder,
   },
   badgeRow: {
     flexDirection: 'row',
@@ -251,10 +195,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 6,
   },
-  headerButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
   jumpButton: {
     alignItems: 'center',
     paddingHorizontal: 12,
@@ -263,10 +203,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.cardBorder,
-    minWidth: 62,
-  },
-  bookmarkedIcon: {
-    color: colors.accent,
+    minWidth: 72,
   },
   jumpButtonIcon: {
     color: colors.accent,
@@ -280,11 +217,16 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  viewerContainer: {
+    height: VIEWER_HEIGHT,
+  },
   footer: {
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 16,
-    backgroundColor: 'rgba(5, 7, 16, 0.75)',
+    borderTopWidth: 1,
+    borderTopColor: colors.cardBorder,
+    backgroundColor: colors.backgroundSecondary,
   },
   hint: {
     color: colors.textMuted,
