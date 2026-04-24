@@ -104,6 +104,12 @@ export default function BookSelectionScreen({ navigation }: Props) {
             <Text style={styles.howToButtonText}>How To Use</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            style={styles.howToButton}
+            onPress={() => navigation.navigate('Bookmarks')}
+          >
+            <Text style={styles.howToButtonText}>Bookmarks</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.characterGuideButton}
             onPress={() => navigation.navigate('CharacterGuide')}
           >
@@ -111,15 +117,15 @@ export default function BookSelectionScreen({ navigation }: Props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.howToButton}
-            onPress={() => navigation.navigate('Worlds')}
-          >
-            <Text style={styles.howToButtonText}>Worlds</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.howToButton}
             onPress={() => navigation.navigate('Timeline')}
           >
             <Text style={styles.howToButtonText}>Timeline</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.howToButton}
+            onPress={() => navigation.navigate('Worlds')}
+          >
+            <Text style={styles.howToButtonText}>Worlds</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.howToButton}
@@ -132,12 +138,6 @@ export default function BookSelectionScreen({ navigation }: Props) {
             onPress={() => navigation.navigate('About')}
           >
             <Text style={styles.howToButtonText}>The Author</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.howToButton}
-            onPress={() => navigation.navigate('Bookmarks')}
-          >
-            <Text style={styles.howToButtonText}>Bookmarks</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -305,6 +305,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 10,
     marginTop: 12,
+    justifyContent: 'center',
   },
   howToButton: {
     alignSelf: 'flex-start',
