@@ -211,7 +211,8 @@ export default function BookSelectionScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={styles.bookMeta}>
-                <Text style={styles.bookTitle} numberOfLines={2}>TBD The Dova Sku Series - Book 3</Text>
+                <Text style={styles.bookTitle} numberOfLines={1}>TBD</Text>
+                <Text style={styles.bookSubtitle} numberOfLines={2}>The Dova Sku Series - Book 3</Text>
                 <View style={styles.progressTrack}>
                   <View style={[styles.progressFill, { width: '0%' }]} />
                 </View>
