@@ -21,7 +21,10 @@ import { useContent } from '../context/ContentContext';
 import { useBookmarks } from '../context/BookmarkContext';
 import { colors } from '../theme/colors';
 
-const VIEWER_HEIGHT = Dimensions.get('window').width * 1.5;
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const HEADER_HEIGHT = 48;
+const FOOTER_HEIGHT = 72;
+const VIEWER_HEIGHT = SCREEN_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT;
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'ImageViewer'>;
