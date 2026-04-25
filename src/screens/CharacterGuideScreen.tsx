@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -60,18 +61,21 @@ export default function CharacterGuideScreen({ navigation }: Props) {
   const { isUnlocked } = useUnlock();
   const { spoilerMode, enableSpoilerMode } = useSpoiler();
 
-  useEffect(() => {
-    fetch(CODEX_URL, { headers: { 'Cache-Control': 'no-cache' } })
-      .then((r) => r.json())
-      .then((data) => {
-        setCharacters(data.characters ?? []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetch(CODEX_URL, { headers: { 'Cache-Control': 'no-cache' } })
+        .then((r) => r.json())
+        .then((data) => {
+          setCharacters(data.characters ?? []);
+          setLoading(false);
+        })
+        .catch(() => {
+          setError(true);
+          setLoading(false);
+        });
+    }, [])
+  );
 
   if (loading) {
     return (
