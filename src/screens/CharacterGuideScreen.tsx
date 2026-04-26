@@ -45,6 +45,7 @@ export type Character = {
   bio: string;
   books: string[];
   unlockAfter: UnlockCondition;
+  deceasedAfter?: UnlockCondition | null;
   versions?: CharacterVersion[];
   storyEvents?: StoryEvent[];
 };
@@ -130,6 +131,8 @@ export default function CharacterGuideScreen({ navigation }: Props) {
       );
     }
 
+    const deceased = item.deceasedAfter ? isUnlocked(item.deceasedAfter) : false;
+
     return (
       <TouchableOpacity
         style={styles.card}
@@ -139,10 +142,24 @@ export default function CharacterGuideScreen({ navigation }: Props) {
         {resolved.image ? (
           <View style={styles.cardImageContainer}>
             <Image source={{ uri: resolved.image }} style={styles.cardImageInner} resizeMode="cover" />
+            {deceased && (
+              <View style={styles.deceasedOverlay}>
+                <View style={styles.deceasedBanner}>
+                  <Text style={styles.deceasedText}>DECEASED</Text>
+                </View>
+              </View>
+            )}
           </View>
         ) : (
           <View style={styles.cardImagePlaceholder}>
             <Text style={styles.placeholderInitial}>{item.name.charAt(0)}</Text>
+            {deceased && (
+              <View style={styles.deceasedOverlay}>
+                <View style={styles.deceasedBanner}>
+                  <Text style={styles.deceasedText}>DECEASED</Text>
+                </View>
+              </View>
+            )}
           </View>
         )}
         <View style={styles.cardMeta}>
@@ -220,7 +237,27 @@ const styles = StyleSheet.create({
     borderColor: colors.cardBorder,
     opacity: 0.5,
   },
-  cardImageContainer: { width: CARD_WIDTH, height: CARD_IMAGE_HEIGHT, overflow: 'hidden' },
+  cardImageContainer: { width: CARD_WIDTH, height: CARD_IMAGE_HEIGHT, overflow: 'hidden', position: 'relative' },
+  deceasedOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deceasedBanner: {
+    borderWidth: 2,
+    borderColor: '#cc2222',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    transform: [{ rotate: '-15deg' }],
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  deceasedText: {
+    color: '#cc2222',
+    fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 3,
+  },
   cardImageInner: { width: CARD_WIDTH, height: CARD_IMAGE_HEIGHT * 1.15, position: 'absolute', top: 20 },
   cardImagePlaceholder: {
     width: CARD_WIDTH,
