@@ -10,7 +10,7 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 // @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -36,6 +36,7 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
   const { bookId, startIndex } = route.params;
   const { getFlatImages } = useContent();
   const flatImages = getFlatImages(bookId);
+  const { bottom: bottomInset } = useSafeAreaInsets();
 
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [viewerKey, setViewerKey] = useState(0);
@@ -110,7 +111,7 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
       </View>
 
       {/* Caption + hint */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingBottom: Math.max(styles.footer.paddingBottom, bottomInset) }]}>
         {current.description && (
           <Text style={styles.imageDescription}>{current.description}</Text>
         )}
