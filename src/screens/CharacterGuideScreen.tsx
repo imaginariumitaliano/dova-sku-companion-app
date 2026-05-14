@@ -54,9 +54,13 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = (SCREEN_WIDTH - 48) / 2;
 const CARD_IMAGE_HEIGHT = CARD_WIDTH * 1.25;
 
+let _cachedCharacters: Character[] = [];
+let _lastCharacterFetch = 0;
+const CHARACTER_CACHE_TTL = 5 * 60 * 1000;
+
 export default function CharacterGuideScreen({ navigation }: Props) {
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [characters, setCharacters] = useState<Character[]>(_cachedCharacters);
+  const [loading, setLoading] = useState(_cachedCharacters.length === 0);
   const [error, setError] = useState(false);
   const [spoilerModalVisible, setSpoilerModalVisible] = useState(false);
   const { isUnlocked } = useUnlock();
@@ -64,15 +68,26 @@ export default function CharacterGuideScreen({ navigation }: Props) {
 
   useFocusEffect(
     useCallback(() => {
-      setLoading(true);
+      const now = Date.now();
+
+      if (_cachedCharacters.length > 0) {
+        setCharacters(_cachedCharacters);
+        setLoading(false);
+        if (now - _lastCharacterFetch < CHARACTER_CACHE_TTL) return;
+      } else {
+        setLoading(true);
+      }
+
       fetch(CODEX_URL, { headers: { 'Cache-Control': 'no-cache' } })
         .then((r) => r.json())
         .then((data) => {
-          setCharacters(data.characters ?? []);
+          _cachedCharacters = data.characters ?? [];
+          _lastCharacterFetch = Date.now();
+          setCharacters(_cachedCharacters);
           setLoading(false);
         })
         .catch(() => {
-          setError(true);
+          if (_cachedCharacters.length === 0) setError(true);
           setLoading(false);
         });
     }, [])

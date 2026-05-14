@@ -14,27 +14,45 @@ interface ContentContextValue {
 
 const ContentContext = createContext<ContentContextValue | null>(null);
 
+let _cachedContent: BooksContent | null = null;
+let _lastFetchTime = 0;
+const CACHE_TTL = 5 * 60 * 1000;
+
 export function ContentProvider({ children }: { children: React.ReactNode }) {
-  const [content, setContent] = useState<BooksContent | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState<BooksContent | null>(_cachedContent);
+  const [loading, setLoading] = useState(_cachedContent === null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchContent = async () => {
-    setLoading(true);
+    const now = Date.now();
+
+    if (_cachedContent) {
+      setContent(_cachedContent);
+      setLoading(false);
+      if (now - _lastFetchTime < CACHE_TTL) return;
+    } else {
+      setLoading(true);
+    }
+
     setError(null);
     try {
       if (USE_LOCAL_CONTENT) {
-        setContent(localContent as BooksContent);
+        _cachedContent = localContent as BooksContent;
+        _lastFetchTime = now;
+        setContent(_cachedContent);
       } else {
-        const response = await fetch(`${CONTENT_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        const response = await fetch(CONTENT_URL, { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
+        _cachedContent = data;
+        _lastFetchTime = now;
         setContent(data);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load content');
-      // Fall back to local content on network error
-      setContent(localContent as BooksContent);
+      if (!_cachedContent) {
+        setError(err instanceof Error ? err.message : 'Failed to load content');
+        setContent(localContent as BooksContent);
+      }
     } finally {
       setLoading(false);
     }
