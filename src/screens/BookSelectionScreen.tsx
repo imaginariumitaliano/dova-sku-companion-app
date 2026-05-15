@@ -221,6 +221,7 @@ export default function BookSelectionScreen({ navigation }: Props) {
             </View>
             <View style={{ width: COVER_WIDTH }} />
           </View>
+          <Text style={styles.copyright}>© 2026 Corey Italiano. All Rights Reserved.</Text>
         }
       />
     </View>
@@ -401,6 +402,14 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 10,
     fontWeight: '600',
+  },
+  copyright: {
+    color: colors.textMuted,
+    fontSize: 11,
+    textAlign: 'center',
+    paddingTop: 16,
+    paddingBottom: 8,
+    opacity: 0.6,
   },
   comingSoonCard: {
     opacity: 0.85,
