@@ -203,7 +203,7 @@ export default function BookSelectionScreen({ navigation }: Props) {
           <Text style={styles.emptyText}>No books available.</Text>
         }
         ListFooterComponent={
-          <View style={styles.row}>
+          <><View style={styles.row}>
             <View style={[styles.bookCard, styles.comingSoonCard]}>
               <View style={styles.comingSoonCover}>
                 <View style={styles.comingSoonBannerWrap}>
@@ -221,7 +221,7 @@ export default function BookSelectionScreen({ navigation }: Props) {
             </View>
             <View style={{ width: COVER_WIDTH }} />
           </View>
-          <Text style={styles.copyright}>© 2026 Corey Italiano. All Rights Reserved.</Text>
+          <Text style={styles.copyright}>© 2026 Corey Italiano. All Rights Reserved.</Text></>
         }
       />
     </View>
