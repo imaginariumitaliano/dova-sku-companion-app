@@ -1,143 +1,77 @@
-# Book Companion App
+# The Dova Sku Series Companion App
 
-A mobile app (iOS & Android) that displays images tied to chapters of a book series. Built with React Native + Expo. Content is managed through a free GitHub repository — no paid services required.
+Official companion app for **The Dova Sku Series** by Corey Italiano. Enhances the reading and listening experience with exclusive artwork, character profiles, lore entries, and a chapter-based progression system that unlocks content as you move through the books.
 
----
-
-## Prerequisites
-
-- [Node.js](https://nodejs.org) (v18 or newer)
-- [Expo CLI](https://docs.expo.dev/get-started/installation/): `npm install -g expo-cli`
-- [Expo Go app](https://expo.dev/client) on your phone (for testing)
-- A GitHub account
+**App Store:** [The Dova Sku Series Companion](https://apps.apple.com/app/the-dova-sku-series-companion/id6761311290)
+**Google Play:** [The Dova Sku Series Companion](https://play.google.com/store/apps/details?id=com.coreyitaliano.bookcompanion)
 
 ---
 
-## Step 1: Set Up the Content GitHub Repository
+## What It Does
 
-This repo stores your images and chapter data. The app fetches content from here at launch.
+The companion app follows your progress through the series. As you mark chapters complete, new content unlocks — artwork, character roster entries, timeline events, and codex lore — so you're never spoiled on what's ahead.
 
-1. Go to [github.com](https://github.com) and create a **new public repository** named `dova-sku-companion-content`
-2. Clone it to your computer
-3. Inside the repo, create this folder structure:
-   ```
-   dova-sku-companion-content/
-   ├── books.json
-   └── images/
-       └── book1/
-           ├── cover.jpg
-           ├── ch01/
-           │   └── image1.jpg
-           ├── ch02/
-           │   ├── image1.jpg
-           │   └── image2.jpg
-           └── ch03/
-               └── image1.jpg
-   ```
-4. Copy the `content/books.json` file from this project into the root of your content repo and fill in your real book title, chapter titles, and image filenames
-5. Commit and push everything to GitHub
+### Core Features
 
-Image URLs follow this pattern:
-```
-https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/book1/ch01/image1.jpg
-```
+| Feature | Description |
+|---|---|
+| **Chapter Artwork** | Exclusive illustrations for each chapter, capturing characters, creatures, and key moments |
+| **Chapter Navigation** | Choose your book, jump to any chapter you've unlocked |
+| **Progress Tracking** | Mark chapters complete to advance your unlock state |
+| **Timeline** | Unlockable chronological events that expand as the story progresses |
+| **Character Roster** | Character profiles that unlock as you meet them in the books |
+| **Codex** | World-building entries — species, technology, locations, history — unlocked through reading |
+| **New Content** | Images and entries added regularly as the series grows |
 
 ---
 
-## Step 2: Configure the App
+## Books Covered
 
-1. Open `src/config.ts`
-2. Set `USE_LOCAL_CONTENT = false` once your GitHub content repo is live
-
----
-
-## Step 3: Fill in `books.json`
-
-Edit `content/books.json` (the one in this project AND the one in your GitHub content repo — they should match):
-
-```json
-{
-  "books": [
-    {
-      "id": "book1",
-      "title": "Your Book Title",
-      "subtitle": "Series Name, Book 1",
-      "coverImage": "https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/book1/cover.jpg",
-      "chapters": [
-        {
-          "number": 1,
-          "title": "The Beginning",
-          "images": [
-            "https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/book1/ch01/image1.jpg"
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
+| Book | Status |
+|---|---|
+| **Book 1 — Transync** | ✅ Fully available |
+| **Book 2 — Ascendant** | ✅ Fully available |
+| **Book 3 — Skrema** | 🔄 In progress |
 
 ---
 
-## Step 4: Run the App
+## How the Unlock System Works
 
-```bash
-cd BookCompanionApp
-npm install
-npm start
-```
+1. Open the app and select your current book
+2. Navigate to the chapter you just finished reading or listening to
+3. Mark the chapter as complete
+4. The app unlocks any Timeline entries, Character Roster profiles, and Codex entries tied to that chapter
+5. Continue to the next chapter — content stays locked until you reach it
 
-Scan the QR code with the Expo Go app on your phone.
-
----
-
-## Adding a New Book (Book 2, 3, etc.)
-
-1. Add a new folder to your content repo: `images/book2/`
-2. Add a new entry to `books.json` in your content repo with `"id": "book2"`
-3. Commit and push — the app will show the new book automatically on next launch, no app update needed
+This system is designed so the app never spoils what's ahead. Every unlock is earned by your progress in the story.
 
 ---
 
-## Adding New Images to an Existing Chapter
+## Privacy
 
-1. Upload the image to the correct folder in your content repo (e.g., `images/book1/ch05/image2.jpg`)
-2. Add the URL to the chapter's `images` array in `books.json` in your content repo
-3. Commit and push — done
+The app does not currently collect personal data. No accounts, no analytics, no tracking.
 
----
+If this changes in a future update (such as cloud sync or user accounts), the [Privacy Policy](https://coreyitaliano.com/privacy.html) will be updated before the update ships.
 
-## Building for the App Store / Google Play
-
-When you're ready to publish:
-
-```bash
-npm install -g eas-cli
-eas login
-eas build --platform ios
-eas build --platform android
-```
-
-EAS Build has a free tier that covers personal projects.
+Full privacy policy: [coreyitaliano.com/privacy.html](https://coreyitaliano.com/privacy.html)
 
 ---
 
-## Project Structure
+## Author
 
-```
-BookCompanionApp/
-├── App.tsx                        # Entry point
-├── app.json                       # Expo configuration
-├── content/
-│   └── books.json                 # Local fallback content (used during dev)
-└── src/
-    ├── config.ts                  # GitHub content URL — edit this first
-    ├── types/index.ts             # TypeScript interfaces
-    ├── theme/colors.ts            # Color palette
-    ├── context/ContentContext.tsx # Fetches and provides book data
-    ├── navigation/AppNavigator.tsx
-    └── screens/
-        ├── BookSelectionScreen.tsx
-        ├── ChapterListScreen.tsx
-        └── ImageViewerScreen.tsx
-```
+**Corey Italiano** — Science fiction author, Boise, Idaho.
+
+| Platform | Link |
+|---|---|
+| Website | [coreyitaliano.com](https://coreyitaliano.com) |
+| Email | imaginariumitaliano@gmail.com |
+| Amazon | [Author Page](https://www.amazon.com/stores/Corey-Italiano/author/B0CZJZ7DSH) |
+| Instagram | [@coreyitaliano.author](https://www.instagram.com/coreyitaliano.author/) |
+| TikTok | [@paisanitaliano](https://www.tiktok.com/@paisanitaliano) |
+| Facebook | [Imaginariumitaliano](https://www.facebook.com/Imaginariumitaliano) |
+
+---
+
+## Feedback & Support
+
+Found a bug or want to suggest a feature? Reach out at **imaginariumitaliano@gmail.com** with the subject line `Companion App Feedback`.
