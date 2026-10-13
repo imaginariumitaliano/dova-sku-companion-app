@@ -51,9 +51,9 @@ This system is designed so the app never spoils what's ahead. Every unlock is ea
 
 The app does not currently collect personal data. No accounts, no analytics, no tracking.
 
-If this changes in a future update (such as cloud sync or user accounts), the [Privacy Policy](https://coreyitaliano.com/privacy.html) will be updated before the update ships.
+If this changes in a future update (such as cloud sync or user accounts), the [Privacy Policy](https://corey-italiano.com/privacy.html) will be updated before the update ships.
 
-Full privacy policy: [coreyitaliano.com/privacy.html](https://coreyitaliano.com/privacy.html)
+Full privacy policy: [corey-italiano.com/privacy.html](https://corey-italiano.com/privacy.html)
 
 ---
 
@@ -63,7 +63,7 @@ Full privacy policy: [coreyitaliano.com/privacy.html](https://coreyitaliano.com/
 
 | Platform | Link |
 |---|---|
-| Website | [coreyitaliano.com](https://coreyitaliano.com) |
+| Website | [corey-italiano.com](https://corey-italiano.com) |
 | Email | imaginariumitaliano@gmail.com |
 | Amazon | [Author Page](https://www.amazon.com/stores/Corey-Italiano/author/B0CZJZ7DSH) |
 | Instagram | [@coreyitaliano.author](https://www.instagram.com/coreyitaliano.author/) |
