@@ -4,11 +4,11 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Image,
   TouchableOpacity,
   Linking,
   Dimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { colors } from '../theme/colors';
 
 // ── Social links ── update these when handles/URLs are confirmed ──────────────
@@ -20,7 +20,7 @@ const SOCIALS: { label: string; url: string }[] = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 const HEADSHOT_URL =
-  'https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/headshot.png';
+  'https://cdn.jsdelivr.net/gh/imaginariumitaliano/dova-sku-companion-content@main/images/headshot.jpg';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const PHOTO_SIZE = SCREEN_WIDTH * 0.42;
@@ -39,7 +39,7 @@ export default function AboutScreen() {
         <Image
           source={{ uri: HEADSHOT_URL }}
           style={styles.headshot}
-          resizeMode="cover"
+          contentFit="cover"
         />
         <View style={styles.heroText}>
           <Text style={styles.authorName}>Corey{'\n'}Italiano</Text>

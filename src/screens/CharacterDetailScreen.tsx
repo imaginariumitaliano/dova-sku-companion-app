@@ -5,11 +5,11 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  Image,
   Dimensions,
   TouchableOpacity,
   Modal,
 } from 'react-native';
+import { Image } from 'expo-image';
 // @ts-ignore
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -89,7 +89,7 @@ export default function CharacterDetailScreen({ route, navigation }: Props) {
         <>
           <TouchableOpacity activeOpacity={0.9} onPress={() => setZoomVisible(true)}>
             <View style={styles.portraitContainer}>
-              <Image source={{ uri: displayImage }} style={styles.portrait} resizeMode="cover" />
+              <Image source={{ uri: displayImage }} style={styles.portrait} contentFit="cover" />
             </View>
           </TouchableOpacity>
           <Modal visible={zoomVisible} transparent animationType="fade" onRequestClose={() => setZoomVisible(false)}>
@@ -100,6 +100,7 @@ export default function CharacterDetailScreen({ route, navigation }: Props) {
               onCancel={() => setZoomVisible(false)}
               backgroundColor="rgba(0,0,0,0.95)"
               renderIndicator={() => <></>}
+              renderImage={(props: any) => <Image {...props} />}
             />
           </Modal>
         </>

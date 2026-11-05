@@ -11,6 +11,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image } from 'expo-image';
 // @ts-ignore — react-native-image-zoom-viewer lacks React 19 compatible types
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -107,6 +108,7 @@ export default function ImageViewerScreen({ navigation, route }: Props) {
           loadingRender={() => (
             <ActivityIndicator size="large" color={colors.accent} />
           )}
+          renderImage={(props: any) => <Image {...props} />}
         />
       </View>
 

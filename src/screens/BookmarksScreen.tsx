@@ -5,9 +5,9 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Dimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useBookmarks, Bookmark } from '../context/BookmarkContext';
@@ -42,7 +42,7 @@ export default function BookmarksScreen({ navigation }: Props) {
         onPress={() => navigation.navigate('ImageViewer', { bookId: item.bookId, startIndex: item.globalIndex })}
         activeOpacity={0.8}
       >
-        <Image source={{ uri: item.imageUrl }} style={styles.cardImage} resizeMode="cover" />
+        <Image source={{ uri: item.imageUrl }} style={styles.cardImage} contentFit="cover" />
       </TouchableOpacity>
       <View style={styles.cardMeta}>
         <Text style={styles.cardBook} numberOfLines={1}>{item.bookTitle}</Text>

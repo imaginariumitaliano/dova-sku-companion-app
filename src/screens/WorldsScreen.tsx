@@ -5,11 +5,11 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  Image,
   Dimensions,
   TouchableOpacity,
   Modal,
 } from 'react-native';
+import { Image } from 'expo-image';
 // @ts-ignore
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { colors } from '../theme/colors';
@@ -60,7 +60,7 @@ function WorldCard({
     <View style={styles.card}>
       {world.image ? (
         <TouchableOpacity activeOpacity={0.9} onPress={() => onZoom(world)}>
-          <Image source={{ uri: world.image }} style={styles.worldImage} resizeMode="cover" />
+          <Image source={{ uri: world.image }} style={styles.worldImage} contentFit="cover" />
         </TouchableOpacity>
       ) : (
         <View style={styles.imagePlaceholder}>
@@ -168,6 +168,7 @@ export default function WorldsScreen() {
             onCancel={() => setZoomWorld(null)}
             backgroundColor="rgba(0,0,0,0.95)"
             renderIndicator={() => <></>}
+            renderImage={(props: any) => <Image {...props} />}
           />
         </Modal>
       )}

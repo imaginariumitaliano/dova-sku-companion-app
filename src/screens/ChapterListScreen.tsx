@@ -5,8 +5,8 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -38,7 +38,7 @@ export default function ChapterListScreen({ navigation, route }: Props) {
 
   const renderChapter = ({ item }: { item: Chapter }) => {
     const startIndex = getChapterStartIndex(item.number);
-    const thumbnail = item.images[0]?.url;
+    const thumbnail = item.images[0]?.thumbnailUrl ?? item.images[0]?.url;
     const read = isRead(bookId, item.number);
     const canRead = canMarkRead(bookId, item.number);
     const canUnread = canMarkUnread(bookId, item.number);
@@ -51,7 +51,7 @@ export default function ChapterListScreen({ navigation, route }: Props) {
         activeOpacity={0.8}
       >
         {thumbnail ? (
-          <Image source={{ uri: thumbnail }} style={styles.thumbnail} resizeMode="cover" />
+          <Image source={{ uri: thumbnail }} style={styles.thumbnail} contentFit="cover" />
         ) : (
           <View style={styles.thumbnailPlaceholder}>
             <Text style={styles.placeholderText}>No Image</Text>

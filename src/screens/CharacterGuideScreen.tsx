@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Image,
   Dimensions,
   Modal,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { colors } from '../theme/colors';
@@ -156,7 +156,7 @@ export default function CharacterGuideScreen({ navigation }: Props) {
       >
         {resolved.image ? (
           <View style={styles.cardImageContainer}>
-            <Image source={{ uri: resolved.image }} style={styles.cardImageInner} resizeMode="cover" />
+            <Image source={{ uri: resolved.image }} style={styles.cardImageInner} contentFit="cover" />
             {deceased && (
               <View style={styles.deceasedOverlay}>
                 <View style={styles.deceasedBanner}>

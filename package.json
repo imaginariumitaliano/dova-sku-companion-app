@@ -16,6 +16,7 @@
     "expo-dev-client": "~6.0.20",
     "expo-file-system": "*",
     "expo-font": "*",
+    "expo-image": "~3.0.11",
     "expo-status-bar": "~3.0.9",
     "expo-updates": "~29.0.16",
     "react": "19.1.0",

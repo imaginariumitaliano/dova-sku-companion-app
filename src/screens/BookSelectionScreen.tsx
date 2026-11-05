@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Image,
+  // Kept for Image.getSize -- expo-image's Image has no equivalent static
+  // method, so this one native-RN import stays just for that call below.
+  Image as RNImage,
   Dimensions,
   Modal,
   ScrollView,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -34,10 +37,10 @@ export default function BookSelectionScreen({ navigation }: Props) {
   const [bgWidth, setBgWidth] = useState(SCREEN_WIDTH);
   const insets = useSafeAreaInsets();
 
-  const BG_URL = 'https://raw.githubusercontent.com/imaginariumitaliano/dova-sku-companion-content/main/images/companion_app_background.png';
+  const BG_URL = 'https://cdn.jsdelivr.net/gh/imaginariumitaliano/dova-sku-companion-content@main/images/companion_app_background.jpg';
 
   useEffect(() => {
-    Image.getSize(BG_URL, (w, h) => {
+    RNImage.getSize(BG_URL, (w, h) => {
       setBgWidth(SCREEN_HEIGHT * (w / h));
     });
   }, []);
@@ -57,7 +60,7 @@ export default function BookSelectionScreen({ navigation }: Props) {
         <View style={[styles.bookCard, styles.comingSoonCard]}>
           <View style={styles.comingSoonCover}>
             {item.coverImage && (
-              <Image source={{ uri: item.coverImage }} style={styles.cover} resizeMode="cover" />
+              <Image source={{ uri: item.coverImage }} style={styles.cover} contentFit="cover" />
             )}
             <View style={styles.comingSoonBannerWrap}>
               <Text style={styles.comingSoonBannerText}>Coming Soon</Text>
@@ -84,7 +87,7 @@ export default function BookSelectionScreen({ navigation }: Props) {
         activeOpacity={0.75}
       >
         {item.coverImage ? (
-          <Image source={{ uri: item.coverImage }} style={styles.cover} resizeMode="cover" />
+          <Image source={{ uri: item.coverImage }} style={styles.cover} contentFit="cover" />
         ) : (
           <View style={styles.coverPlaceholder}>
             <Text style={styles.placeholderLabel}>No Cover</Text>
