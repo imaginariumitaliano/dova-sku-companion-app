@@ -15,6 +15,7 @@ export interface Book {
   title: string;
   subtitle?: string;
   coverImage?: string;
+  locked?: boolean;
   chapters: Chapter[];
 }
 

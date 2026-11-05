@@ -52,6 +52,27 @@ export default function BookSelectionScreen({ navigation }: Props) {
   }
 
   const renderBook = ({ item }: { item: Book }) => {
+    if (item.locked) {
+      return (
+        <View style={[styles.bookCard, styles.comingSoonCard]}>
+          <View style={styles.comingSoonCover}>
+            {item.coverImage && (
+              <Image source={{ uri: item.coverImage }} style={styles.cover} resizeMode="cover" />
+            )}
+            <View style={styles.comingSoonBannerWrap}>
+              <Text style={styles.comingSoonBannerText}>Coming Soon</Text>
+            </View>
+          </View>
+          <View style={styles.bookMeta}>
+            <Text style={styles.bookTitle} numberOfLines={2}>{item.title}</Text>
+            {item.subtitle && (
+              <Text style={styles.bookSubtitle} numberOfLines={2}>{item.subtitle}</Text>
+            )}
+          </View>
+        </View>
+      );
+    }
+
     const totalChapters = item.chapters.length;
     const readCount = getReadChapters(item.id).length;
     const progressPct = totalChapters > 0 ? readCount / totalChapters : 0;
@@ -203,25 +224,7 @@ export default function BookSelectionScreen({ navigation }: Props) {
           <Text style={styles.emptyText}>No books available.</Text>
         }
         ListFooterComponent={
-          <><View style={styles.row}>
-            <View style={[styles.bookCard, styles.comingSoonCard]}>
-              <View style={styles.comingSoonCover}>
-                <View style={styles.comingSoonBannerWrap}>
-                  <Text style={styles.comingSoonBannerText}>Coming Soon</Text>
-                </View>
-              </View>
-              <View style={styles.bookMeta}>
-                <Text style={styles.bookTitle} numberOfLines={1}>TBD</Text>
-                <Text style={styles.bookSubtitle} numberOfLines={2}>The Dova Sku Series - Book 3</Text>
-                <View style={styles.progressTrack}>
-                  <View style={[styles.progressFill, { width: '0%' }]} />
-                </View>
-                <Text style={styles.progressLabel}>0 / TBD ch</Text>
-              </View>
-            </View>
-            <View style={{ width: COVER_WIDTH }} />
-          </View>
-          <Text style={styles.copyright}>© 2026 Corey Italiano. All Rights Reserved.</Text></>
+          <Text style={styles.copyright}>© 2026 Corey Italiano. All Rights Reserved.</Text>
         }
       />
     </View>
